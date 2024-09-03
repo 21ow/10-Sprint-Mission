@@ -10,24 +10,36 @@ const pwCheck = document.querySelector(".js-pw-check");
 
 // 이벤트 핸들러
 function valueCheck(e) {
+  const isValid = e.target.value;
+  let errorTarget;
+  let message;
+
   switch (e.target.name) {
     case "email":
-      setInvalid(e.target, emailError, "이메일을 입력해주세요");
+      errorTarget = emailError;
+      message = "이메일을 입력해주세요";
       break;
 
     case "password":
-      setInvalid(e.target, pwError, "비밀번호를 입력해주세요");
+      errorTarget = pwError;
+      message = "비밀번호를 입력해주세요";
       break;
 
     case "password-check":
-      setInvalid(e.target, pwCheckError, "비밀번호를 입력해주세요");
+      errorTarget = pwCheckError;
+      message = "비밀번호를 입력해주세요";
       break;
 
     case "nickname":
-      e.target.value
-        ? setValid(e.target, nicknameError)
-        : setInvalid(e.target, nicknameError, "닉네임을 입력해주세요");
+      errorTarget = nicknameError;
+      message = "닉네임을 입력해주세요";
       break;
+  }
+
+  if (isValid) {
+    setValid(e.target, errorTarget);
+  } else {
+    setInvalid(e.target, errorTarget, message);
   }
 }
 
@@ -68,9 +80,9 @@ function valueValidation() {
     }
   });
 
-  if (pwCheck) {
+  if (pwCheck.value) {
     pwMatch();
-  } else buttonActivation();
+  }
 }
 
 function emailValidation(el) {
@@ -87,33 +99,34 @@ function emailValidation(el) {
 }
 
 function pwValidation(el) {
-  const isValid = el.value && el.value.length >= 8; //조건을 묶음
-  const errorTarget = !el.value ? pwError : pwCheckError; //에러 타겟을 지정
-  const errorMessage = !el.value
-    ? "비밀번호를 입력해주세요"
-    : "비밀번호를 8자 이상 입력해주세요"; //타겟별 메시지 지정
+  const isValid = el.value && el.value.length >= 8;
+  const errorTarget = el.name === "password" ? pwError : pwCheckError;
+  const message = el.value
+    ? "비밀번호를 8자 이상 입력해주세요"
+    : "비밀번호를 입력해주세요";
 
   if (isValid) {
-    setValid(el, el.name === "password" ? pwError : pwCheckError);
-    return;
+    setValid(el, errorTarget);
+  } else {
+    setInvalid(el, errorTarget, message);
   }
-
-  setInvalid(el, errorTarget, errorMessage);
 }
 
 function pwMatch() {
-  if (pw.value && pwCheck.value) {
-    if (pw.value === pwCheck.value) {
-      setValid(pwCheck, pwCheckError);
-    } else {
-      if (pwCheck.value.length > 8) {
-        setInvalid(pwCheck, pwCheckError, "비밀번호가 일치하지 않습니다");
-      }
-      valueStatus.push(FAILED);
-    }
+  const isLengthValid = pwCheck.value.length >= 8;
+  const isMatchValid = pw.value === pwCheck.value;
+  const isValid = isLengthValid && isMatchValid;
+  let message;
+
+  if (!isLengthValid) {
+    message = "비밀번호를 8자 이상 입력해주세요";
+  } else if (!isMatchValid) {
+    message = "비밀번호가 일치하지 않습니다";
   }
-  buttonActivation();
-  //비밀번호 일치 확인
+
+  if (isValid) {
+    setValid(pwCheck, pwCheckError);
+  } else setInvalid(pwCheck, pwCheckError, message);
 }
 
 function buttonActivation() {
