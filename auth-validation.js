@@ -1,6 +1,3 @@
-// 비밀번호 관련 기능 모듈 가져오기
-import { pw } from "./toggle-pw.js";
-
 // DOM 요소 참조
 const form = document.querySelector(".js-form");
 const input = document.querySelectorAll(".js-input");
@@ -125,6 +122,22 @@ function buttonActivation() {
   //버튼 활성화 및 페이지 이동
 }
 
+const pw = document.querySelector(".js-pw");
+const pwIcon = document.querySelector(".js-pw-icon");
+
+function toggleIcon(e) {
+  const hidden = "/images/icon/pw-hidden.png";
+  const view = "/images/icon/pw-view.png";
+
+  const isPasswordType = pw.type === "password";
+
+  pw.type = isPasswordType ? "text" : "password";
+  pwIcon.src = isPasswordType ? view : hidden;
+  pwIcon.alt = isPasswordType ? "비밀번호 보기 버튼" : "비밀번호 숨기기 버튼";
+  pw.focus();
+  //비밀번호 토글 기능
+}
+
 // 이벤트 리스너
 input.forEach((el) => {
   el.addEventListener("focusout", valueCheck);
@@ -140,3 +153,5 @@ button.addEventListener("click", (e) => {
   e.preventDefault();
   valueValidation();
 });
+
+pwIcon.addEventListener("click", toggleIcon);
