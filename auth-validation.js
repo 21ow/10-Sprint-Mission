@@ -43,12 +43,6 @@ function valueCheck(e) {
   }
 }
 
-function rewriteValue(e) {
-  if (!e.target.value) {
-    e.target.classList.add("invalid");
-  }
-}
-
 function setValid(el, errorElement) {
   el.classList.remove("invalid", "js-error");
   if (errorElement) errorElement.textContent = "";
@@ -113,6 +107,8 @@ function pwValidation(el) {
 }
 
 function pwMatch() {
+  //비밀번호 일치 확인
+
   const isLengthValid = pwCheck.value.length >= 8;
   const isMatchValid = pw.value === pwCheck.value;
   const isValid = isLengthValid && isMatchValid;
@@ -129,19 +125,12 @@ function pwMatch() {
   } else setInvalid(pwCheck, pwCheckError, message);
 }
 
-function buttonActivation() {
-  if (!valueStatus.includes(FAILED)) {
-    form.submit();
-    if (!pwCheck) location.href = "items.html";
-    else location.href = "login.html";
-  }
-  //버튼 활성화 및 페이지 이동
-}
-
 const pw = document.querySelector(".js-pw");
 const pwIcon = document.querySelector(".js-pw-icon");
 
 function toggleIcon(e) {
+  //비밀번호 토글
+
   const hidden = "/images/icon/pw-hidden.png";
   const view = "/images/icon/pw-view.png";
 
@@ -151,17 +140,11 @@ function toggleIcon(e) {
   pwIcon.src = isPasswordType ? view : hidden;
   pwIcon.alt = isPasswordType ? "비밀번호 보기 버튼" : "비밀번호 숨기기 버튼";
   pw.focus();
-  //비밀번호 토글 기능
 }
 
 // 이벤트 리스너
 input.forEach((el) => {
   el.addEventListener("focusout", valueCheck);
-  el.addEventListener("focusin", (e) => {
-    if (e.target.classList.contains("js-error")) {
-      rewriteValue(e);
-    }
-  });
   el.addEventListener("change", valueCheck);
 });
 
